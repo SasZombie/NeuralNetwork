@@ -6,7 +6,7 @@
 #include "stb_image.h"
 #include "NeuralNetwork.hpp"
 
-constexpr size_t samples = 2;
+constexpr size_t samples = 3;
 constexpr size_t factor = 28 * 28;
 constexpr size_t picturePerSample = 20;
 
@@ -67,7 +67,7 @@ int main(int argc, const char **argv)
 
     nn::Mat t(picturePerSample * samples, factor + samples); 
 
-    std::filesystem::path bigForlder = "MinstConvert/";
+    std::filesystem::path bigForlder = "MinstConvert/MinstTrain/";
 
     for(size_t k = 0; k < samples; ++k)
     {
@@ -76,7 +76,6 @@ int main(int argc, const char **argv)
         currentFolder.append(std::to_string(k));
         t = t + wholeFolder(currentFolder, k);
     }
-
 
     std::string outPath = argv[1];
     outPath.append(".mat");

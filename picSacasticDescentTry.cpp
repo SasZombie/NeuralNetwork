@@ -116,7 +116,8 @@ float numberRet(const std::string &name, nn::NN &nn) noexcept
     nn.forward();
     
     float max = 0, ret = 0;
-    for(size_t i = 0; i < 2; ++i)
+    size_t outPuts = nn.getOutput().getCols();
+    for(size_t i = 0; i < outPuts; ++i)
     {
         float output = nn.getOutput().getAt(0, i);
         std::cout << output << '\n';
@@ -344,18 +345,6 @@ int main(int argc, char **argv)
         
         DrawCircle(200, 200, 10, RED);
         DrawCircle(200, 300, 10, GREEN);
-
-        // if(IsKeyPressed(KEY_G))
-        // {
-        //     number = getRandom();
-        //     std::cout << number <<'\n';
-            
-
-        //     float out = numberRet("MinstConvert/MinstTest/" + imgsTestNames[number], nn);
-        //     rounded = std::round(out);
-
-        //     amVerifiying = false;
-        // }
 
         if(IsKeyPressed(KEY_F))
         {
