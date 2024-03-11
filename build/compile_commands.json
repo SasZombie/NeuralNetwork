@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/saszombie/Coding/NeuralNetwork/build",
+  "command": "/usr/bin/g++    -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -lraylib -lGL -lpthread -ldl -lrt -lX11 -O3 -g -std=gnu++23 -o CMakeFiles/.cpp.dir/NN.cpp.o -c /home/saszombie/Coding/NeuralNetwork/NN.cpp",
+  "file": "/home/saszombie/Coding/NeuralNetwork/NN.cpp",
+  "output": "CMakeFiles/.cpp.dir/NN.cpp.o"
+},
+{
+  "directory": "/home/saszombie/Coding/NeuralNetwork/build",
+  "command": "/usr/bin/g++    -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -lraylib -lGL -lpthread -ldl -lrt -lX11 -O3 -g -std=gnu++23 -o CMakeFiles/.cpp.dir/NeuralNetwork.cpp.o -c /home/saszombie/Coding/NeuralNetwork/NeuralNetwork.cpp",
+  "file": "/home/saszombie/Coding/NeuralNetwork/NeuralNetwork.cpp",
+  "output": "CMakeFiles/.cpp.dir/NeuralNetwork.cpp.o"
+}
+]
