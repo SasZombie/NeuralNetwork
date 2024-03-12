@@ -59,8 +59,6 @@ nn::Mat nn::Mat::operator+(const Mat &other) const noexcept
     else
         otherToAddRows = 0;
 
-    std::cout << "inside + rows and other = " << toAddRows << ' ' << otherToAddRows << '\n';
-
     size_t newRows = toAddRows + otherToAddRows;
     assert(newRows>0);
     Mat retMat{newRows, this->cols};
