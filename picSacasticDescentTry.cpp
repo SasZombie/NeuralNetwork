@@ -11,6 +11,8 @@
 
 constexpr int WIDTH = 1280, HEIGHT = 720;
 
+
+void vectorPaths(std::vector<std::string> &paths) noexcept;
 int getRandom(size_t min, size_t max) noexcept;
 std::tuple<float, float> minMaxPlot(const std::vector<float>&plot);
 void renderPlot(const std::vector<float>& cost, int x, int y, int w, int h);
@@ -137,7 +139,7 @@ bool endsWith(const std::string& fullString, const std::string& ending) {
            fullString.compare(fullString.size() - ending.size(), ending.size(), ending) == 0;
 }
 
-void vectorPaths(std::vector<std::string> &paths)
+void vectorPaths(std::vector<std::string> &paths) noexcept
 {
     for (const auto& entry : std::filesystem::directory_iterator("MinstConvert/MinstMixed/"))
     {
@@ -204,7 +206,7 @@ int main(int argc, char **argv)
 
     bigMat.shuffle();
 
-    float rate = 0.5f;
+    float rate = 0.1f;
 
     size_t stride = bigMat.getStride();
     size_t rows = bigMat.getRows();

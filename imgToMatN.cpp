@@ -6,7 +6,7 @@
 #include "stb_image.h"
 #include "NeuralNetwork.hpp"
 
-constexpr size_t samples = 4;
+constexpr size_t samples = 10;
 constexpr size_t factor = 28 * 28;
 constexpr size_t picturePerSample = 20;
 
