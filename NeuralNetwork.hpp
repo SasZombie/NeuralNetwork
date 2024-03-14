@@ -126,6 +126,9 @@ namespace nn
         void fineDiff(NN &grad, const float eps, const Mat& ti, const Mat& to);
         float cost(const Mat& ti, const Mat& to);
 
+        void save(std::ofstream& path) const noexcept;
+        void load(std::ifstream& path) noexcept;
+
      
         //Getters And Setters >_<
 

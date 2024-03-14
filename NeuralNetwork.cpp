@@ -687,6 +687,77 @@ float nn::NN::cost(const Mat &ti, const Mat &to)
     return c;
 }
 
+void nn::NN::save(std::ofstream &path) const noexcept
+{
+    // if(path.flags() & static_cast<std::ios_base::fmtflags>(std::ios::app))
+    // {
+    //     std::cerr<<"Cannot save NN since the append file is not set!\n";
+
+    //     return;
+    // }
+    const std::string magic = "susnn";
+    
+    path.write(magic.c_str(), magic.size());
+
+    path.write(reinterpret_cast<const char*>(&count), sizeof(size_t));
+
+    for(const Mat& mat : this->ws)
+        mat.save(path);
+
+    for(const Mat& mat : this->bs)
+        mat.save(path);
+
+    for(const Mat& mat : this->as)
+        mat.save(path);
+
+}
+
+void nn::NN::load(std::ifstream &path) noexcept
+{
+
+    const std::string expectedMagic("susnn");
+
+    char buffer[5];
+    path.read(buffer, sizeof(buffer));
+
+    std::string buff(buffer, sizeof(buffer));
+    if(buff != expectedMagic)
+    {
+        std::cerr << buff << " is not a valid nerutal network file\n";
+        return;
+    }
+
+
+    path.read(reinterpret_cast<char*>(&this->count), sizeof(size_t));
+    
+    if(this->count < 1)
+    {
+        std::cerr << "Matrix cannot have 0 or negative count numbers\n";
+        return;
+    }
+
+    this->ws.resize(this->count);
+   
+    this->bs.resize(this->count);
+
+    this->as.resize(this->count + 1);
+
+    for(size_t i = 0; i < count; ++i)
+    {
+        this->ws.at(i).load(path);
+    }
+
+    for(size_t i = 0; i < count; ++i)
+    {
+        this->bs.at(i).load(path);
+    }
+ 
+    for(size_t i = 0; i < count + 1; ++i)
+    {
+        this->as.at(i).load(path);
+    }   
+}
+
 float nn::NN::getAtWs(const size_t i, const size_t j, const size_t k) const noexcept
 {
     return this->ws[i].getAt(j, k);
