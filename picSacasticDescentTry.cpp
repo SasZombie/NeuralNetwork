@@ -137,6 +137,15 @@ bool endsWith(const std::string& fullString, const std::string& ending) {
            fullString.compare(fullString.size() - ending.size(), ending.size(), ending) == 0;
 }
 
+void vectorPaths(std::vector<std::string> &paths)
+{
+    for (const auto& entry : std::filesystem::directory_iterator("MinstConvert/MinstMixed/"))
+    {
+        paths.push_back(entry.path()); 
+    }
+    
+}
+
 int main(int argc, char **argv)
 {
     if(argc < 3)
@@ -221,6 +230,9 @@ int main(int argc, char **argv)
 
     float cost = 0.f;
     std::vector<float> costFunction = {0.f};
+    std::vector<std::string> paths;
+
+    vectorPaths(paths);
     
     Color color{0x18, 0x18, 0x18, 0xFF};
         
@@ -264,6 +276,8 @@ int main(int argc, char **argv)
     const Texture2D texes[] ={
         t0, t1, t2, t3, t4, t5, t6, t7, t8, t9
     };
+
+    const size_t pathsSize = paths.size();
 
     int number = 0, rounded = 0;
     bool amVerifiying = false;
@@ -348,8 +362,9 @@ int main(int argc, char **argv)
 
         if(IsKeyPressed(KEY_F))
         {
-            number = getRandom(0, 80);
-            std::string path = getImgPath(number, "MinstConvert/MinstMixed/");
+            number = getRandom(0, pathsSize);
+            std::cout << number << '\n';
+            std::string path = paths.at(number);
             float out = numberRet(path , nn);
             rounded = std::round(out);
 
