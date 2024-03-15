@@ -62,9 +62,11 @@ void render(nn::NN nn)
 
 float td[] = {
     0, 0, 0,
-    1, 0, 1,
-    0, 1, 1,
-    1, 1, 0
+    1, 0, 0,
+    2, 0, 0,
+    3, 0, 1,
+    0, 1, 0,
+    0, 2, 1
 };
 
 
@@ -80,16 +82,11 @@ int main()
     nn::NN nn(arch, stride);
     nn::NN grad(arch, stride);
 
-    nn::Mat ti(4, 2, stride, td);
+    nn::Mat ti(6, 2, stride, td);
 
-    nn::Mat to(4, 1, stride, td+2);
+    nn::Mat to(6, 1, stride, td+2);
 
     nn.rand();
-    
-    ti.print();
-    to.print();
-    nn.print();
-    grad.print();
 
     float rate = 1;
 
@@ -112,9 +109,9 @@ int main()
         EndDrawing();
     }
     
-    for (size_t i = 0; i < 2; ++i)
+    for (size_t i = 0; i <= 3; ++i)
     {
-        for(size_t j = 0; j < 2; ++j)
+        for(size_t j = 0; j <= 3; ++j)
         {
             nn.setAtAs(0, 0, 0, i);
             nn.setAtAs(0, 0, 1, j);
