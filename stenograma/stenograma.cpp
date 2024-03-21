@@ -1,7 +1,9 @@
 #include <SFML/Audio.hpp>
 #include <fftw3.h>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../stb_image_write.h"
+
 #include <iostream>
 #include <cmath>
 #include <complex>
@@ -130,8 +132,4 @@ int main() {
 
     stbi_write_png("stenogramaMyFFT.png", width, height, 1, image, width);
 
-    // Free memory
-    delete[] image;
-
-    return 0;
 }
