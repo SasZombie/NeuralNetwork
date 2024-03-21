@@ -68,7 +68,7 @@ void soundToMag(std::complex<double> in[], size_t N)
 
 
 int main() {
-
+    constexpr float freqNum = 32768.f;
     sf::SoundBuffer buffer;
 
     if (!buffer.loadFromFile("Baldurs.wav")) 
@@ -87,8 +87,8 @@ int main() {
 
 
     std::vector<double> audioData(sampleCount);
-    for (std::size_t i = 0; i < sampleCount; ++i) {
-        audioData[i] = static_cast<double>(samples[i]) / 32768.0f;
+    for (size_t i = 0; i < sampleCount; ++i) {
+        audioData[i] = static_cast<double>(samples[i]) / freqNum ;
     }
 
     const int N = sampleCount;
