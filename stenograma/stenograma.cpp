@@ -61,10 +61,10 @@ void fft(double in2[], size_t stride, std::complex<double>out2[], size_t n)
     } 
 }
 
-void soundToMag(std::complex<double> in[], size_t N)
+void soundToMag(std::complex<double> in[], double out[], size_t N)
 {
     for(size_t i = 0; i < N; ++i)
-        in[i] = 20 * log10(sqrt(in->real() * in->real() + in->imag() * in->imag()));
+        out[i] = 20 * log10(sqrt(in->real() * in->real() + in->imag() * in->imag()));
 }
 
 
@@ -100,11 +100,11 @@ int main() {
     std::complex<double> *out = new std::complex<double>[N];
     
     fft(in, 1, out, N);
-    // soundToMag(out, N);
+    soundToMag(out, in, N);
 
-    std::vector<double> fftResult = fft(audioData);
+    std::vector<double> result = fft(audioData);
 
-    std::cout << fftResult.size();
+    std::cout << result.size();
 
     size_t width = 28;
     size_t height = 28; 
@@ -113,7 +113,7 @@ int main() {
     {
         for (size_t j = 0; j < height; ++j)
         {
-            double value = out[i].real();
+            double value = in[i];
             int index = j * width + i;
             if(value < 0)
             {
