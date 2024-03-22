@@ -6,15 +6,46 @@
 #include "stb_image.h"
 #include "NeuralNetwork.hpp"
 
-constexpr size_t samples = 10;
-constexpr size_t factor = 28 * 28;
-constexpr size_t picturePerSample = 20;
+constexpr size_t samples = 2;
+constexpr size_t factor = 128 * 128;
+constexpr size_t picturePerSample = 1;
+
+
+enum class GenerasOfMusic { 
+    Country, Disco, Dubstep, Electric, HipHop, Jazz, Metal, Opera, Pop, Rock
+};
+
+std::string enumToString(GenerasOfMusic value) {
+    switch (value) {
+        case GenerasOfMusic::Country :
+            return "Country";
+        case GenerasOfMusic::Disco:
+            return "Disco";
+        case GenerasOfMusic::Dubstep:
+            return "Dubstep";
+        case GenerasOfMusic::Electric:
+            return "Electric";
+        case GenerasOfMusic::HipHop:
+            return "HipHot";
+        case GenerasOfMusic::Jazz:
+            return "Jazz";
+        case GenerasOfMusic::Metal:
+            return "Metal";
+        case GenerasOfMusic::Opera:
+            return "Opera";
+        case GenerasOfMusic::Pop:
+            return "Pop";
+        case GenerasOfMusic::Rock:
+            return "Rock";
+        default:
+            return "Unknown";
+    }
+}
 
 nn::Mat PicToMat(const std::string& name, float number)
 {
 
     int imgWidth, imgHeight, imgComp;
-    
     uint8_t *data = reinterpret_cast<uint8_t*>(stbi_load(name.c_str(), &imgWidth, &imgHeight, &imgComp, 0));
    
     nn::Mat t(1, factor + samples);
@@ -67,13 +98,13 @@ int main(int argc, const char **argv)
 
     nn::Mat t(picturePerSample * samples, factor + samples); 
 
-    std::filesystem::path bigForlder = "MinstConvert/MinstTrain/";
+    std::filesystem::path bigForlder = "musicStenogram/";
 
     for(size_t k = 0; k < samples; ++k)
     {
         std::string currentFolder = bigForlder;
 
-        currentFolder.append(std::to_string(k));
+        currentFolder.append(enumToString(static_cast<GenerasOfMusic>(k)));
         t = t + wholeFolder(currentFolder, k);
     }
 
