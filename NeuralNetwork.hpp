@@ -13,7 +13,8 @@
 namespace nn
 {
     float sig(const float x) noexcept;
-    
+    float relu(const float x) noexcept;
+
     class Mat
     {
     private:
@@ -80,6 +81,7 @@ namespace nn
         void sum(const Mat a);
         void shuffle() noexcept;
         void setEs(const float *n_es);
+        void apply_relu() noexcept;
         void apply_sigmoid() noexcept;
         void fill(const float x) noexcept;
         void append(const Mat& m) noexcept;
@@ -101,10 +103,17 @@ namespace nn
     
     };    
 
+    enum class activations {
+        sigmoid, relu
+    };
 
     class NN
     {
     private:
+
+
+        activations actFunction = activations::sigmoid;
+
 
         size_t count;
         std::vector<nn::Mat> ws;
@@ -115,10 +124,12 @@ namespace nn
 
         NN() = default;
         NN(size_t *arch, size_t arch_count);
+        NN(const std::string &file);
         void clear() noexcept;
         void print() const noexcept;
         void alloc(size_t *arch, size_t arch_count);
         void rand(const float low = 0, const float max = 1);
+        void setActivation(activations activation);
 
         void forward() noexcept;
         void learn(const NN &grad, float rate);

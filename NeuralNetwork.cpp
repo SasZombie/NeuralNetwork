@@ -11,6 +11,7 @@ void nn::Mat::setEs(const float* n_es)
     }
 }
 
+
 size_t nn::Mat::getRows() const noexcept
 {
     return rows;
@@ -344,9 +345,28 @@ void nn::Mat::apply_sigmoid() noexcept
     }
 }
 
+void nn::Mat::apply_relu() noexcept
+{
+    for(size_t i = 0; i < rows; ++i)
+    {
+        for(size_t j = 0; j < cols; ++j)
+        {
+            mat_at(this, i, j) = relu(mat_at(this, i, j));
+        }
+    }
+}
+
+
 float nn::sig(const float x) noexcept
 {
     return 1.f/(1.f + std::exp(-x));
+}
+
+float nn::relu(const float x) noexcept
+{
+    if(x > 0)
+        return x;
+    return 0;
 }
 
 float nn::Mat::getRandom() const noexcept
@@ -397,6 +417,13 @@ nn::NN::NN(size_t *arch, size_t arch_count)
         this->as[i].alloc(1, arch[i]);
 
     }
+}
+
+nn::NN::NN(const std::string &file)
+{
+    std::ifstream input(file, std::ios::binary);
+
+    load(input);
 }
 
 void nn::NN::print() const noexcept
@@ -454,6 +481,11 @@ void nn::NN::rand(const float low, const float max)
     
 }
 
+void nn::NN::setActivation(activations activation)
+{
+    this->actFunction = activation;
+}
+
 void nn::NN::clear() noexcept
 {
     for(size_t i = 0; i < count; ++i)
@@ -498,7 +530,18 @@ void nn::NN::forward() noexcept
         this->as[i+1].clear();
         this->as[i+1].dot(this->as[i], this->ws[i]);
         this->as[i+1].sum(this->bs[i]);
-        this->as[i+1].apply_sigmoid();
+
+        switch (this->actFunction)
+        {
+        case activations::sigmoid :
+            this->as[i+1].apply_sigmoid();
+            break;
+        case activations::relu: 
+            this->as[i+1].apply_relu();
+            break;
+        default:
+            break;
+        }
 
     }
     
@@ -542,31 +585,25 @@ void nn::NN::backProp(NN &grad, const Mat &ti, const Mat &to)
                 float da = grad.as[l].getAt(0, j);
 
                 // std::cout << "j = " << j << '\n';
-      
-                grad.setAtBs(l-1, 0, j, (grad.getAtBs(l-1, 0, j) + 2 * da * a * (1 - a)));
-                // int size = this->as[l-1].getCols();
+
+                float q;
+                if(this->actFunction == activations::sigmoid)
+                    q = a * (1-a);
+                else
+                    q = (a > 0);
+                
+                grad.setAtBs(l-1, 0, j, (grad.getAtBs(l-1, 0, j) + 2 * da * q));
 
                 for(size_t k = 0; k < this->as[l-1].getCols(); ++k)
                 {
 
-                    //j - weight matrix col
-                    //k - weight matrix row
-                                    
+                                   
                     float pa = this->as[l-1].getAt(0, k);
                     float w = this->ws[l-1].getAt(k, j);
 
-                    grad.setAtWs(l-1, k, j, grad.getAtWs(l-1, k, j) + 2* da * a * (1 - a) * pa);
+                    grad.setAtWs(l-1, k, j, grad.getAtWs(l-1, k, j) + 2* da * q * pa);
 
-                    // grad.setAtWs(l-1, k, j, 3);
-
-                    // std::cout << "k = " << k << " l = " << l << "j = " << j << "size max = " << size << '\n';
-                    ///////////////////////////////////////////////
-                    grad.setAtAs(l-1, 0, k, grad.getAtAs(l-1, 0, j) + 2* da * a * (1 - a) * w);
-                    
-                    ///////////////////////////////////////////////
-
-                    // grad.setAtAs(l-1, 0, k, grad.getAtAs(l-1, 0, j) + 2* da * a * (1 - a) * w);
-                    // grad.setAtAs(l-1, k, j, 3);
+                    grad.setAtAs(l-1, 0, k, grad.getAtAs(l-1, 0, j) + 2* da * q * w);
 
                 }
             }
@@ -710,6 +747,7 @@ void nn::NN::save(std::ofstream &path) const noexcept
     for(const Mat& mat : this->as)
         mat.save(path);
 
+    std::cout << "Saved" << '\n';
 }
 
 void nn::NN::load(std::ifstream &path) noexcept

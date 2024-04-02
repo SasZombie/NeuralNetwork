@@ -4,10 +4,8 @@
 #include <vector>
 #include <raylib.h>
 #include <filesystem>
-#include "stb_image_write.h"
 #include <limits>
 #include "NeuralNetwork.hpp"
-#include "stb_image.h"
 
 constexpr size_t pictureWIDTH = 60, pictureHEIGHT = 60;
 constexpr int WIDTH = 1280, HEIGHT = 720;
@@ -131,22 +129,44 @@ void renderPlot(const std::vector<float>& cost, int x, int y, int w, int h)
 
 }
 
+std::vector<std::string> split(const std::string &s, char delimiter) 
+{
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(s);
+    while (std::getline(tokenStream, token, delimiter))
+    {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
+
 float numberRet(const std::string &name, nn::NN &nn) noexcept
 {
 
-    int imgWidth, imgHeight, imgComp;
-    
-    uint8_t *data = reinterpret_cast<uint8_t*>(stbi_load(name.c_str(), &imgWidth, &imgHeight, &imgComp, 0));
-
-    for (size_t i = 0; i < pictureWIDTH; ++i)
+    std::ifstream file("PythonNN/myfeatures_3_sec.csv", std::ios::binary); 
+    if (!file.is_open())
     {
-        for(size_t j = 0; j < pictureHEIGHT; ++j)
-        {
-            size_t index = i * pictureWIDTH + j;
-
-            nn.setAtAs(0, 0, index, data[index]);
-        }
+        std::cerr << "Error opening file.\n";
+        return 1;
     }
+
+    std::string line;
+    short index = 0;
+
+    std::getline(file, line);
+    std::vector<std::string> tokens = split(line, ','); 
+    for (size_t i = 0; i < tokens.size() - 1; ++i)
+    {
+        std::cout << tokens[i] << ' ';
+        nn.setAtAs(0, 0, i, std::stof(tokens[i]));
+    }
+    std::string s = tokens.back();
+    s.erase(s.size() - 1);
+
+    nn.setAtAs(0, 0, tokens.size(), std::stof(s));
+    std::cout << nn.getAtAs(0, 0, tokens.size()) << '\n';
 
     nn.forward();
     
@@ -243,8 +263,9 @@ int main(int argc, char **argv)
 
     bigMat.shuffle();
 
-    float rate = 0.01f;
+    float rate = 0.000146f;
 
+    constexpr int maxIterations = 100 * 1000;
     size_t stride = bigMat.getStride();
     size_t rows = bigMat.getRows();
     size_t count = nn.getCount();
@@ -327,7 +348,7 @@ int main(int argc, char **argv)
             rate = rate + 1;
         }
 
-        for(size_t i = 0; i < batchPerFrame && !pause; ++i)
+        for(size_t i = 0; i < batchPerFrame && iterations < maxIterations && !pause; ++i)
         {   
             size_t size = batchSize;
             if(batchBegin + batchSize >= rows)
