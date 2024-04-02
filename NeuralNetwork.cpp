@@ -673,9 +673,54 @@ void nn::NN::fineDiff(NN &grad, const float eps, const Mat &ti, const Mat &to)
     }
 }
 
-float nn::NN::autoLearn(NN &grad, const Mat &t)
+float nn::NN::autoLearn(NN &grad, const Mat &t, Batch& batch, float rate)
 {
+    batch.setFinsished(false);
+    size_t size = batch.getBatchSize();
+    size_t rows = batch.getRows();
+    size_t batchBegin = batch.getBatchBegin();
+    size_t stride = batch.getStride();
+    size_t cols = batch.getCols();
+    size_t batchPerFrame = batch.getBatchPerFrame();
 
+    float lastCost = 0;
+    for(size_t i = 0; i < batchPerFrame; ++i)
+    { 
+
+        if(batchBegin + size >= rows)
+        {
+            size = rows - batchBegin;
+        }
+        const float *data = t.getData();
+
+        nn::Mat inBatchMat{size, batch.getInSz(), stride, data + (batchBegin * cols)};
+        nn::Mat outBatchMat{size, batch.getOutSz(), stride, data + (batchBegin * cols + batch.getInSz())};
+        
+
+        this->backProp(grad, inBatchMat, outBatchMat);   
+        this->learn(grad, rate);
+
+        lastCost = lastCost + this->cost(inBatchMat, outBatchMat);
+        batchBegin = batchBegin + batch.getBatchSize();
+        batch.setBatchBegin(batchBegin);
+        if(batchBegin >= rows)
+        {
+            batch.setFinsished(true);
+            batch.setBatchBegin(0);
+            i = batchPerFrame;
+        }
+    }
+    return lastCost;
+}
+
+bool nn::Batch::isFinished() const noexcept
+{
+    return this->finish;
+}
+
+void nn::Batch::setFinsished(bool status) noexcept
+{
+    this->finish = status;
 }
 
 void nn::NN::learn(const NN &grad, float rate)
@@ -843,54 +888,68 @@ void nn::NN::setAtAs(const size_t i, const size_t j, const size_t k, const float
 
 nn::NN::~NN() = default;
 
-void nn::Batch::setStride(size_t stride) noexcept
+nn::Batch::Batch(const std::vector<size_t> &arch, const Mat &t)
 {
-    this->stride = stride;
+    stride = t.getStride();
+    rows = t.getRows();
+    count = arch.size() - 1;
+    cols = t.getCols();
+    inSz = arch[0];
+    outSz = arch[count];
+    batchSize = 28;
+    batchPerFrame = 200;
+    batchBegin = 0;
+    batchCount = (rows + batchSize - 1)/batchSize;
 }
 
-void nn::Batch::setRows(size_t rows) noexcept 
+void nn::Batch::setStride(size_t nstride) noexcept
 {
-    this->rows = rows;
+    this->stride = nstride;
 }
 
-void nn::Batch::setCount(size_t count) noexcept
+void nn::Batch::setRows(size_t nrows) noexcept 
 {
-    this->count = count;
+    this->rows = nrows;
 }
 
-void nn::Batch::setCols(size_t cols) noexcept 
+void nn::Batch::setCount(size_t ncount) noexcept
 {
-    this->cols = cols;
+    this->count = ncount;
 }
 
-void nn::Batch::setInSz(size_t inSz) noexcept
+void nn::Batch::setCols(size_t ncols) noexcept 
 {
-    this->inSz = inSz;
+    this->cols = ncols;
 }
 
-void nn::Batch::setOutSz(size_t outSz) noexcept 
+void nn::Batch::setInSz(size_t ninSz) noexcept
 {
-    this->outSz = outSz;
+    this->inSz = ninSz;
 }
 
-void nn::Batch::setBatchSize(size_t batchSize) noexcept 
+void nn::Batch::setOutSz(size_t noutSz) noexcept 
 {
-    this->batchSize = batchSize;
+    this->outSz = noutSz;
 }
 
-void nn::Batch::setBatchPerFrame(size_t batchPerFrame) noexcept 
+void nn::Batch::setBatchSize(size_t nbatchSize) noexcept 
 {
-    this->batchPerFrame = batchPerFrame;
+    this->batchSize = nbatchSize;
 }
 
-void nn::Batch::setBatchBegin(size_t batchBegin) noexcept 
+void nn::Batch::setBatchPerFrame(size_t nbatchPerFrame) noexcept 
 {
-    this->batchBegin = batchBegin;
+    this->batchPerFrame = nbatchPerFrame;
 }
 
-void nn::Batch::setBatchCount(size_t batchCount) noexcept 
+void nn::Batch::setBatchBegin(size_t nbatchBegin) noexcept 
 {
-    this->batchCount = batchCount;
+    this->batchBegin = nbatchBegin;
+}
+
+void nn::Batch::setBatchCount(size_t nbatchCount) noexcept 
+{
+    this->batchCount = nbatchCount;
 }
 
 size_t nn::Batch::getStride() const noexcept 

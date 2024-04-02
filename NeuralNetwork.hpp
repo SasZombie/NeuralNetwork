@@ -102,6 +102,55 @@ namespace nn
         Mat operator+(const Mat& other) const noexcept;
     
     };    
+    class Batch
+    {
+    private:
+        bool finish = false;
+
+        size_t stride;
+        size_t rows;
+        size_t count;
+        size_t cols;
+        size_t inSz;
+        size_t outSz;
+        size_t batchSize = 50;
+        size_t batchPerFrame = 200;
+        size_t batchBegin;
+        size_t batchCount;
+
+    public:
+        Batch(const std::vector<size_t> &arch, const Mat& t);
+
+        // >_< Gettters and setters :3
+        void setFinsished(bool status) noexcept;
+
+        void setStride(size_t stride) noexcept;
+        void setRows(size_t rows) noexcept;
+        void setCount(size_t count) noexcept;
+        void setCols(size_t cols) noexcept;
+        void setInSz(size_t inSz) noexcept;
+        void setOutSz(size_t outSz) noexcept;
+        void setBatchSize(size_t batchSize) noexcept;
+        void setBatchPerFrame(size_t batchPerFrame) noexcept;
+        void setBatchBegin(size_t batchBegin) noexcept;
+        void setBatchCount(size_t batchCount) noexcept;
+
+        bool isFinished() const noexcept;
+
+        size_t getStride() const noexcept;
+        size_t getRows() const noexcept;
+        size_t getCount() const noexcept;
+        size_t getCols() const noexcept;
+        size_t getInSz() const noexcept;
+        size_t getOutSz() const noexcept;
+        size_t getBatchSize() const noexcept;
+        size_t getBatchPerFrame() const noexcept;
+        size_t getBatchBegin() const noexcept;
+        size_t getBatchCount() const noexcept;
+
+
+        ~Batch() = default;
+    };
 
     enum class activations {
         sigmoid, relu
@@ -132,7 +181,7 @@ namespace nn
         void learn(const NN &grad, float rate);
         void backProp(NN &grad, const Mat &ti, const Mat &to);
         void fineDiff(NN &grad, const float eps, const Mat& ti, const Mat& to);
-        float autoLearn(NN &grad, const Mat&t);
+        float autoLearn(NN &grad, const Mat&t, Batch& batch, float rate = 0.001f);
         float cost(const Mat& ti, const Mat& to);
 
         void save(std::ofstream& path) const noexcept;
@@ -164,54 +213,6 @@ namespace nn
         ~NN();
     };    
 
-    class Batch
-    {
-    private:
-    
-        size_t stride;
-        size_t rows;
-        size_t count;
-        size_t cols;
-        size_t inSz;
-        size_t outSz;
-        size_t batchSize = 50;
-        size_t batchPerFrame = 200;
-        size_t batchBegin;
-        size_t batchCount;
-
-    public:
-        Batch(const std::vector<float> &arch, const Mat& t);
-        
-
-
-        // >_< Gettters and setters :3
-        void setStride(size_t stride) noexcept;
-        void setRows(size_t rows) noexcept;
-        void setCount(size_t count) noexcept;
-        void setCols(size_t cols) noexcept;
-        void setInSz(size_t inSz) noexcept;
-        void setOutSz(size_t outSz) noexcept;
-        void setBatchSize(size_t batchSize) noexcept;
-        void setBatchPerFrame(size_t batchPerFrame) noexcept;
-        void setBatchBegin(size_t batchBegin) noexcept;
-        void setBatchCount(size_t batchCount) noexcept;
-
-
-
-        size_t getStride() const noexcept;
-        size_t getRows() const noexcept;
-        size_t getCount() const noexcept;
-        size_t getCols() const noexcept;
-        size_t getInSz() const noexcept;
-        size_t getOutSz() const noexcept;
-        size_t getBatchSize() const noexcept;
-        size_t getBatchPerFrame() const noexcept;
-        size_t getBatchBegin() const noexcept;
-        size_t getBatchCount() const noexcept;
-
-
-        ~Batch() = default;
-    };
  
     
 } // namespace nn
