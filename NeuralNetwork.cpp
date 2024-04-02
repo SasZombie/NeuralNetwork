@@ -673,6 +673,11 @@ void nn::NN::fineDiff(NN &grad, const float eps, const Mat &ti, const Mat &to)
     }
 }
 
+float nn::NN::autoLearn(NN &grad, const Mat &t)
+{
+
+}
+
 void nn::NN::learn(const NN &grad, float rate)
 {
     for(size_t i = 0; i < count; ++i)
@@ -837,3 +842,103 @@ void nn::NN::setAtAs(const size_t i, const size_t j, const size_t k, const float
 }
 
 nn::NN::~NN() = default;
+
+void nn::Batch::setStride(size_t stride) noexcept
+{
+    this->stride = stride;
+}
+
+void nn::Batch::setRows(size_t rows) noexcept 
+{
+    this->rows = rows;
+}
+
+void nn::Batch::setCount(size_t count) noexcept
+{
+    this->count = count;
+}
+
+void nn::Batch::setCols(size_t cols) noexcept 
+{
+    this->cols = cols;
+}
+
+void nn::Batch::setInSz(size_t inSz) noexcept
+{
+    this->inSz = inSz;
+}
+
+void nn::Batch::setOutSz(size_t outSz) noexcept 
+{
+    this->outSz = outSz;
+}
+
+void nn::Batch::setBatchSize(size_t batchSize) noexcept 
+{
+    this->batchSize = batchSize;
+}
+
+void nn::Batch::setBatchPerFrame(size_t batchPerFrame) noexcept 
+{
+    this->batchPerFrame = batchPerFrame;
+}
+
+void nn::Batch::setBatchBegin(size_t batchBegin) noexcept 
+{
+    this->batchBegin = batchBegin;
+}
+
+void nn::Batch::setBatchCount(size_t batchCount) noexcept 
+{
+    this->batchCount = batchCount;
+}
+
+size_t nn::Batch::getStride() const noexcept 
+{
+    return stride;
+}
+
+size_t nn::Batch::getRows() const noexcept
+{
+    return rows;
+}
+
+size_t nn::Batch::getCount() const noexcept
+{
+    return count;
+}
+
+size_t nn::Batch::getCols() const noexcept 
+{
+    return cols;
+}
+
+size_t nn::Batch::getInSz() const noexcept 
+{
+    return inSz;
+}
+
+size_t nn::Batch::getOutSz() const noexcept 
+{
+    return outSz;
+}
+
+size_t nn::Batch::getBatchSize() const noexcept 
+{
+    return batchSize;
+}
+
+size_t nn::Batch::getBatchPerFrame() const noexcept 
+{
+    return batchPerFrame;
+}
+
+size_t nn::Batch::getBatchBegin() const noexcept 
+{
+    return batchBegin;
+}
+
+size_t nn::Batch::getBatchCount() const noexcept 
+{
+    return batchCount;
+}
