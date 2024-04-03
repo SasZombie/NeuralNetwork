@@ -6,6 +6,7 @@
 #include <random>
 #include <memory>
 #include <fstream>
+#include <chrono>
 
 #define mat_at(m, i, j)  (m)->es[(i) * (m)->stride + (j)]
 #define mat_at_non(m, i, j)  (m).es[(i) * (m).stride + (j)]
@@ -191,6 +192,8 @@ namespace nn
         void learn(const NN &grad, float rate);
         void backProp(NN &grad, const Mat &ti, const Mat &to);
         void fineDiff(NN &grad, const float eps, const Mat& ti, const Mat& to);
+        void printActivations() const noexcept;
+
         float autoLearn(NN &grad, Mat&t, Batch& batch, float rate = 0.001f);
         float cost(const Mat& ti, const Mat& to);
 

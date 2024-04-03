@@ -447,9 +447,7 @@ void nn::NN::alloc(size_t *arch, size_t arch_count)
     
     this->count = arch_count - 1;
 
-    this->actFunctions.resize(this->count);
-
-    std::fill(this->actFunctions.begin(), this->actFunctions.end(), nn::activations::sigmoid);
+    this->actFunctions.resize(this->count, nn::activations::sigmoid);
 
     this->ws.resize(this->count);
    
@@ -526,6 +524,14 @@ size_t nn::NN::getCount() const noexcept
     return count;
 }
 
+void nn::NN::printActivations() const noexcept
+{
+    for(nn::activations a : this->actFunctions)
+    {
+        std::cout << static_cast<int>(a) << '\n';
+    }
+}
+
 void nn::NN::forward() noexcept
 {
     for (size_t i = 0; i < count; ++i)
@@ -587,9 +593,13 @@ void nn::NN::backProp(NN &grad, const Mat &ti, const Mat &to)
                 float q;
 
                 if(this->actFunctions[l] == activations::sigmoid)
+                {
                     q = a * (1-a);
+                }   
                 else
+                {
                     q = (a > 0);
+                }
                 
                 grad.setAtBs(l-1, 0, j, (grad.getAtBs(l-1, 0, j) + 2 * da * q));
 
@@ -684,6 +694,8 @@ float nn::NN::autoLearn(NN &grad, Mat &t, Batch& batch, float rate)
     size_t outSz = batch.getOutSz();
 
     float lastCost = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+
     for(size_t i = 0; i < batchPerFrame; ++i)
     { 
 
@@ -713,6 +725,9 @@ float nn::NN::autoLearn(NN &grad, Mat &t, Batch& batch, float rate)
             }
         }
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Epoch duration is: " << duration << '\n';
     return lastCost;
 }
 

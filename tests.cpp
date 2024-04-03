@@ -28,7 +28,6 @@ size_t batchCount;
 
 std::vector<float> costFunction = {0.f};
 
-float rate = 0.5f;
 
 void render(nn::NN& nn, int x, int y, int w, int h)
 {
@@ -219,10 +218,8 @@ int main(int argc, char **argv)
 
     bool pause = true;
 
-    constexpr int maxIterations = 100 * 1000;
-
-    float cost = 0.f;
-  
+    nn.printActivations();
+    constexpr int maxIterations = 100 * 1000;  
     
     Color color{0x18, 0x18, 0x18, 0xFF};
         
@@ -235,7 +232,6 @@ int main(int argc, char **argv)
 
     nn::Batch batch(arch, bigMat);
 
-    auto start = std::chrono::high_resolution_clock::now();
     while (!WindowShouldClose())
     {
         if(IsKeyPressed(KEY_SPACE))
@@ -247,13 +243,12 @@ int main(int argc, char **argv)
         {
             iterations = 0;
             costFunction.clear();
-            cost = 0.f;
             nn.clear();
             nn.rand(-1, 1);
         }
 
         if(!pause)
-            costFunction.push_back(nn.autoLearn(grad, bigMat, batch, rate)/batch.getBatchCount());
+            costFunction.push_back(nn.autoLearn(grad, bigMat, batch, 0.5f)/batch.getBatchCount());
 
         if(batch.isFinished() && !pause)
         {
@@ -294,17 +289,13 @@ int main(int argc, char **argv)
         UpdateTexture(prevTexture, prevImage.data);
         DrawTextureEx(prevTexture, Vector2{static_cast<float>(rx), static_cast<float>(ry)}, 0, 15, RAYWHITE);
 
-        const std::string text = "Number of Iterations: " + std::to_string(iterations) + "/" + std::to_string(maxIterations) + " Rate = " + std::to_string(rate) + " Cost = " + std::to_string(costFunction.back());
+        const std::string text = "Number of Iterations: " + std::to_string(iterations) + "/" + std::to_string(maxIterations) + " Rate = " + std::to_string(0.00135f) + " Cost = " + std::to_string(costFunction.back());
 
         DrawText(text.c_str(), 0, 0, sh * 0.04f, RAYWHITE);
 
         EndDrawing();
     }
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-    std::cout << "Execution time: " << duration.count() << " microseconds\n";
-
+    
     size_t outWidth = 512;
     size_t outHeight = 512;
 
