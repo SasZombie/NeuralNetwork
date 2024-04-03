@@ -26,46 +26,9 @@ size_t batchPerFrame;
 size_t batchBegin;
 size_t batchCount;
 
-float cost = 0.f;
 std::vector<float> costFunction = {0.f};
 
 float rate = 0.5f;
-
-
-float pluh(nn::NN &nn, nn::Mat& bigMat, nn::NN& grad)
-{
-    for(size_t i = 0; i < batchPerFrame; ++i)
-    {   
-        size_t size = batchSize;
-        if(batchBegin + batchSize >= rows)
-        {
-            size = rows - batchBegin;
-        }
-
-        const float *data = bigMat.getData();
-        nn::Mat inBatchMat{size, 2, stride, data + (batchBegin * 3 + 0)};
-        nn::Mat outBatchMat{size, 1, stride, data + (batchBegin * 3 + 2)};
-        
-        nn.backProp(grad, inBatchMat, outBatchMat);   
-        nn.learn(grad, rate);
-
-        cost = cost + nn.cost(inBatchMat, outBatchMat);
-        batchBegin = batchBegin + batchSize;
-
-        if(batchBegin >= rows)
-        {
-            ++iterations;
-            costFunction.push_back(cost/batchCount);
-            cost = 0.f;
-            batchBegin = 0;
-            bigMat.shuffle();   
-        }
-        
-    }
-
-    return cost;
-
-}
 
 void render(nn::NN nn, int x, int y, int w, int h)
 {
@@ -216,7 +179,7 @@ int main(int argc, char **argv)
 
     file.close();
     
-    nn::NN nn(arch.data(), arch.size()); 
+    nn::NN nn(arch.data(), arch.size(), nn::Flags::shuffle); 
     nn::NN grad(arch.data(), arch.size());
 
     nn.rand(-1, 1);
@@ -258,6 +221,7 @@ int main(int argc, char **argv)
 
     constexpr int maxIterations = 100 * 1000;
 
+    float cost = 0.f;
   
     
     Color color{0x18, 0x18, 0x18, 0xFF};
@@ -270,17 +234,6 @@ int main(int argc, char **argv)
 
 
     nn::Batch batch(arch, bigMat);
-
-    std::cout << "Stride: " << batch.getStride() << std::endl;
-    std::cout << "Rows: " << batch.getRows() << std::endl;
-    std::cout << "Count: " << batch.getCount() << std::endl;
-    std::cout << "Cols: " << batch.getCols() << std::endl;
-    std::cout << "InSz: " << batch.getInSz() << std::endl;
-    std::cout << "OutSz: " << batch.getOutSz() << std::endl;
-    std::cout << "BatchSize: " << batch.getBatchSize() << std::endl;
-    std::cout << "BatchPerFrame: " << batch.getBatchPerFrame() << std::endl;
-    std::cout << "BatchBegin: " << batch.getBatchBegin() << std::endl;
-    std::cout << "BatchCount: " << batch.getBatchCount() << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
     while (!WindowShouldClose())
@@ -298,48 +251,15 @@ int main(int argc, char **argv)
             nn.clear();
             nn.rand(-1, 1);
         }
-#if 0
 
-        for(size_t i = 0; i < batchPerFrame && iterations < maxIterations && !pause; ++i)
-        {   
-            size_t size = batchSize;
-            if(batchBegin + batchSize >= rows)
-            {
-                size = rows - batchBegin;
-            }
+        if(!pause)
+            costFunction.push_back(nn.autoLearn(grad, bigMat, batch, rate)/batch.getBatchCount());
 
-            const float *data = bigMat.getData();
-            nn::Mat inBatchMat{size, 2, stride, data + (batchBegin * 3 + 0)};
-            nn::Mat outBatchMat{size, 1, stride, data + (batchBegin * 3 + 2)};
-            
-            nn.backProp(grad, inBatchMat, outBatchMat);   
-            nn.learn(grad, rate);
-
-            cost = cost + nn.cost(inBatchMat, outBatchMat);
-            batchBegin = batchBegin + batchSize;
-
-            if(batchBegin >= rows)
-            {
-                ++iterations;
-                costFunction.push_back(cost/batchCount);
-                cost = 0.f;
-                batchBegin = 0;
-                bigMat.shuffle();   
-            }
-            
+        if(batch.isFinished() && !pause)
+        {
+            ++iterations;
         }
-#else
 
-        pluh(nn, bigMat, grad);
-        // costFunction.push_back(nn.autoLearn(grad, bigMat, batch, rate)/batch.getBatchCount());
-
-        // if(batch.isFinished())
-        // {
-        //     ++iterations;
-        //     bigMat.shuffle();
-        //     batch.setFinsished(false);
-        // }
-#endif
         BeginDrawing();
         ClearBackground(color);
 

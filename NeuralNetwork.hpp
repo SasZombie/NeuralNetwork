@@ -12,6 +12,12 @@
 
 namespace nn
 {
+    enum class Flags {
+        shuffle = 1, fl1, fl2
+    };
+
+    Flags operator|(Flags lhs, Flags rhs);
+
     float sig(const float x) noexcept;
     float relu(const float x) noexcept;
 
@@ -161,6 +167,7 @@ namespace nn
     private:
         activations actFunction = activations::sigmoid;
 
+        Flags flags;
         size_t count;
         std::vector<nn::Mat> ws;
         std::vector<nn::Mat> bs;
@@ -171,17 +178,20 @@ namespace nn
         NN() = default;
         NN(size_t *arch, size_t arch_count);
         NN(const std::string &file);
+        NN(size_t *arch, size_t arch_count, Flags nFlags);
+        NN(const std::string &file, Flags nFlags);
+        bool hasFlag(Flags flag) const noexcept;
         void clear() noexcept;
         void print() const noexcept;
         void alloc(size_t *arch, size_t arch_count);
         void rand(const float low = 0, const float max = 1);
         void setActivation(activations activation);
-
+        void addFlag(Flags nFlags) noexcept;
         void forward() noexcept;
         void learn(const NN &grad, float rate);
         void backProp(NN &grad, const Mat &ti, const Mat &to);
         void fineDiff(NN &grad, const float eps, const Mat& ti, const Mat& to);
-        float autoLearn(NN &grad, const Mat&t, Batch& batch, float rate = 0.001f);
+        float autoLearn(NN &grad, Mat&t, Batch& batch, float rate = 0.001f);
         float cost(const Mat& ti, const Mat& to);
 
         void save(std::ofstream& path) const noexcept;

@@ -356,6 +356,13 @@ void nn::Mat::apply_relu() noexcept
     }
 }
 
+nn::Flags nn::operator|(nn::Flags lhs, nn::Flags rhs)
+{
+    using underlying = typename std::underlying_type<nn::Flags>::type;
+    return static_cast<nn::Flags>(static_cast<underlying>(lhs) | static_cast<underlying>(rhs));
+}
+
+
 
 float nn::sig(const float x) noexcept
 {
@@ -393,36 +400,27 @@ const float *nn::Mat::getData() const noexcept
 
 nn::NN::NN(size_t *arch, size_t arch_count)
 {
-    if(arch_count < 1)
-    {
-        std::cout << "Arch count cannot be 0";
-        return;
-    }
-    
-    this->count = arch_count - 1;
-
-    this->ws.resize(this->count);
-   
-    this->bs.resize(this->count);
-
-    this->as.resize(this->count + 1);
-
-    this->as[0].alloc(1, arch[0]);
-
-
-    for (size_t i = 1; i < arch_count; ++i)
-    {
-        this->ws[i-1].alloc(this->as[i - 1].getCols(), arch[i]);
-        this->bs[i-1].alloc(1, arch[i]);
-        this->as[i].alloc(1, arch[i]);
-
-    }
+    this->alloc(arch, arch_count);
 }
 
 nn::NN::NN(const std::string &file)
 {
     std::ifstream input(file, std::ios::binary);
 
+    load(input);
+}
+
+nn::NN::NN(size_t *arch, size_t arch_count, Flags nFlags)
+    : flags(nFlags)
+{
+    this->alloc(arch, arch_count);
+}
+
+nn::NN::NN(const std::string &file, Flags nFlags)
+    : flags(nFlags)
+{
+    std::ifstream input(file, std::ios::binary);
+    
     load(input);
 }
 
@@ -484,6 +482,11 @@ void nn::NN::rand(const float low, const float max)
 void nn::NN::setActivation(activations activation)
 {
     this->actFunction = activation;
+}
+
+void nn::NN::addFlag(Flags nFlags) noexcept
+{
+    flags = static_cast<Flags>(static_cast<int>(flags) | static_cast<int>(nFlags));
 }
 
 void nn::NN::clear() noexcept
@@ -673,46 +676,54 @@ void nn::NN::fineDiff(NN &grad, const float eps, const Mat &ti, const Mat &to)
     }
 }
 
-float nn::NN::autoLearn(NN &grad, const Mat &t, Batch& batch, float rate)
+float nn::NN::autoLearn(NN &grad, Mat &t, Batch& batch, float rate)
 {
     batch.setFinsished(false);
     size_t size = batch.getBatchSize();
     size_t rows = batch.getRows();
-    size_t batchBegin = batch.getBatchBegin();
     size_t stride = batch.getStride();
     size_t cols = batch.getCols();
     size_t batchPerFrame = batch.getBatchPerFrame();
+    size_t inSz = batch.getInSz();
+    size_t outSz = batch.getOutSz();
 
     float lastCost = 0;
     for(size_t i = 0; i < batchPerFrame; ++i)
     { 
 
-        if(batchBegin + size >= rows)
+        if(batch.getBatchBegin() + size  >= rows)
         {
-            size = rows - batchBegin;
+            size = rows - batch.getBatchBegin();
         }
         const float *data = t.getData();
 
-        nn::Mat inBatchMat{size, batch.getInSz(), stride, data + (batchBegin * cols)};
-        nn::Mat outBatchMat{size, batch.getOutSz(), stride, data + (batchBegin * cols + batch.getInSz())};
+        nn::Mat inBatchMat{size, inSz, stride, data + (batch.getBatchBegin() * cols)};
+        nn::Mat outBatchMat{size, outSz, stride, data + (batch.getBatchBegin() * cols + inSz)};
         
 
         this->backProp(grad, inBatchMat, outBatchMat);   
         this->learn(grad, rate);
 
         lastCost = lastCost + this->cost(inBatchMat, outBatchMat);
-        batchBegin = batchBegin + batch.getBatchSize();
-        batch.setBatchBegin(batchBegin);
-        if(batchBegin >= rows)
+
+        batch.setBatchBegin(batch.getBatchBegin() + batch.getBatchSize());
+        if(batch.getBatchBegin() >= rows)
         {
             batch.setFinsished(true);
             batch.setBatchBegin(0);
-            i = batchPerFrame;
+            if(this->hasFlag(Flags::shuffle))
+            {
+                t.shuffle();
+            }
         }
     }
     return lastCost;
 }
 
+bool nn::NN::hasFlag(Flags flag) const noexcept
+{
+    return static_cast<int>(this->flags) & static_cast<int>(flag);
+}
 bool nn::Batch::isFinished() const noexcept
 {
     return this->finish;
