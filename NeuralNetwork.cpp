@@ -447,6 +447,10 @@ void nn::NN::alloc(size_t *arch, size_t arch_count)
     
     this->count = arch_count - 1;
 
+    this->actFunctions.resize(this->count);
+
+    std::fill(this->actFunctions.begin(), this->actFunctions.end(), nn::activations::sigmoid);
+
     this->ws.resize(this->count);
    
     this->bs.resize(this->count);
@@ -454,11 +458,6 @@ void nn::NN::alloc(size_t *arch, size_t arch_count)
     this->as.resize(this->count + 1);
 
     this->as[0].alloc(1, arch[0]);
-
-
-
-    this->as[0].alloc(1, arch[0]);
-
 
     for (size_t i = 1; i < arch_count; ++i)
     {
@@ -479,9 +478,10 @@ void nn::NN::rand(const float low, const float max)
     
 }
 
-void nn::NN::setActivation(activations activation)
+void nn::NN::setActivation(size_t layer, activations activation) noexcept
 {
-    this->actFunction = activation;
+    assert(layer < count);
+    this->actFunctions[layer] = activation;
 }
 
 void nn::NN::addFlag(Flags nFlags) noexcept
@@ -534,7 +534,7 @@ void nn::NN::forward() noexcept
         this->as[i+1].dot(this->as[i], this->ws[i]);
         this->as[i+1].sum(this->bs[i]);
 
-        switch (this->actFunction)
+        switch (this->actFunctions[i+1])
         {
         case activations::sigmoid :
             this->as[i+1].apply_sigmoid();
@@ -574,8 +574,6 @@ void nn::NN::backProp(NN &grad, const Mat &ti, const Mat &to)
 
         }
 
-        // std::cout << "Count = " << this->as[this->count].getCols() << '\n';
-
         for(size_t l = this->count; l > 0; --l)
         {
 
@@ -584,13 +582,11 @@ void nn::NN::backProp(NN &grad, const Mat &ti, const Mat &to)
 
 
                 float a = this->as[l].getAt(0, j);
-            
                 float da = grad.as[l].getAt(0, j);
 
-                // std::cout << "j = " << j << '\n';
-
                 float q;
-                if(this->actFunction == activations::sigmoid)
+
+                if(this->actFunctions[l] == activations::sigmoid)
                     q = a * (1-a);
                 else
                     q = (a > 0);

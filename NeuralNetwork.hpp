@@ -165,13 +165,13 @@ namespace nn
     class NN
     {
     private:
-        activations actFunction = activations::sigmoid;
 
         Flags flags;
         size_t count;
         std::vector<nn::Mat> ws;
         std::vector<nn::Mat> bs;
         std::vector<nn::Mat> as;//Count + 1 
+        std::vector<activations> actFunctions;
 
     public:
 
@@ -185,7 +185,7 @@ namespace nn
         void print() const noexcept;
         void alloc(size_t *arch, size_t arch_count);
         void rand(const float low = 0, const float max = 1);
-        void setActivation(activations activation);
+        void setActivation(size_t layer, activations activation) noexcept;
         void addFlag(Flags nFlags) noexcept;
         void forward() noexcept;
         void learn(const NN &grad, float rate);

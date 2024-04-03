@@ -10,7 +10,7 @@
 
 constexpr int WIDTH = 1280, HEIGHT = 720;
 
-void render(nn::NN nn, int x, int y, int w, int h);
+void render(nn::NN& nn, int x, int y, int w, int h);
 std::tuple<float, float> minMaxPlot(const std::vector<float>&plot);
 void renderPlot(const std::vector<float>& cost, int x, int y, int w, int h);
 bool endsWith(const std::string& fullString, const std::string& ending);
@@ -30,7 +30,7 @@ std::vector<float> costFunction = {0.f};
 
 float rate = 0.5f;
 
-void render(nn::NN nn, int x, int y, int w, int h)
+void render(nn::NN& nn, int x, int y, int w, int h)
 {
 
     Color lowColor{0xFF, 0x00, 0xFF, 0xFF};
