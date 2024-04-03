@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
+import pickle
 
 
 df = pd.read_csv("Data/features_3_sec.csv")
@@ -57,16 +58,21 @@ model=tf.keras.models.Sequential([
     tf.keras.layers.Dense(32,activation='relu'),
     tf.keras.layers.Dropout(0.2),
     
-    tf.keras.layers.Dense(10,activation='softmax', ),
+    tf.keras.layers.Dense(10,activation='softmax'),
 ])
 
 optimizer = tf.keras.optimizers.Adam(learning_rate=0.000146)
 model.compile(optimizer=optimizer,
              loss="sparse_categorical_crossentropy",
               metrics=["accuracy"])
+
 model.summary()
-model_history=train_model(model=model,epochs=600,optimizer='adam')
-model.save("my_trained_model.h5")
+model_history=train_model(model=model, epochs=10, optimizer='adam')
+# model.save("good.h5")
+# tf.keras.models.save_model(model_history, 'model_history_tf', save_format='tf')
+
+with open('model_history.pkl', 'wb') as file:
+    pickle.dump(model_history.history, file)
 
 sample = df_new.iloc[0,:-1] 
 sample_scaled = fit.transform(np.array(sample).reshape(1,-1))

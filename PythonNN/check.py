@@ -28,7 +28,7 @@ X1=fit.fit_transform(np.array(df.iloc[:,:-1],dtype=float))
 
 
 
-model = keras.models.load_model("my_trained_model.h5")
+model = keras.models.load_model("good.h5")
 
 sample = df_new.iloc[0,:-1] 
 sample_scaled = fit.transform(np.array(sample).reshape(1,-1))

@@ -14,19 +14,7 @@ void render(nn::NN& nn, int x, int y, int w, int h);
 std::tuple<float, float> minMaxPlot(const std::vector<float>&plot);
 void renderPlot(const std::vector<float>& cost, int x, int y, int w, int h);
 bool endsWith(const std::string& fullString, const std::string& ending);
-int iterations = 0;
 
-size_t stride;
-size_t rows;
-size_t count;
-size_t inSz;
-size_t outSz;
-size_t batchSize;
-size_t batchPerFrame;
-size_t batchBegin;
-size_t batchCount;
-
-std::vector<float> costFunction = {0.f};
 
 
 void render(nn::NN& nn, int x, int y, int w, int h)
@@ -64,7 +52,6 @@ void render(nn::NN& nn, int x, int y, int w, int h)
                     
                     int cx2 = nnX + (l+1) * layerHPad + layerHPad/2;
                     int cy2 = nnY + j*layerVPad2 + layerVPad2/2; 
-                        // std::cout << nn.getAsCols(l) << ' ' << nn.getAsCols(l+1) << ' ' << nn.getAtAs(l, j, i)<< '\n';    
                     highColor.a = std::floor(255.f * nn::sig(nn.getAtWs(l, j, i)));
                     DrawLine(cx, cy, cx2, cy2, ColorAlphaBlend(lowColor, highColor, WHITE));
 
@@ -198,21 +185,15 @@ int main(int argc, char **argv)
     inFile.close();
 
     bigMat.shuffle();
+    int iterations = 0;
 
+    std::vector<float> costFunction = {0.f};
 
-    stride = bigMat.getStride();
-    rows = bigMat.getRows();
-    count = nn.getCount();
-    inSz = arch[0];
-    outSz = arch[count];
-    batchSize = 28;
-    batchPerFrame = 200;
-    batchBegin = 0;
-    batchCount = (rows + batchSize - 1)/batchSize;
+    nn::Batch batch(arch, bigMat);
 
-    if(nn.getCount() < 1 || bigMat.getCols() != inSz + outSz)
+    if(nn.getCount() < 1 || bigMat.getCols() != batch.getOutSz() + batch.getInSz())
     {
-        std::cerr << "Incorrect format files\n";
+        std::cerr << "Incorrect format files\n" << "Expected In and Out: " << batch.getInSz() << " " << batch.getOutSz();
         return 1;
     }
 
@@ -230,7 +211,6 @@ int main(int argc, char **argv)
     Texture2D prevTexture = LoadTextureFromImage(prevImage);
 
 
-    nn::Batch batch(arch, bigMat);
 
     while (!WindowShouldClose())
     {
