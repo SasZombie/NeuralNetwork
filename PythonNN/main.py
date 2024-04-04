@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
+import seaborn as sns
 from tensorflow import keras
 import matplotlib.pyplot as plt
 import pickle
@@ -67,9 +68,8 @@ model.compile(optimizer=optimizer,
               metrics=["accuracy"])
 
 model.summary()
-model_history=train_model(model=model, epochs=10, optimizer='adam')
-# model.save("good.h5")
-# tf.keras.models.save_model(model_history, 'model_history_tf', save_format='tf')
+model_history=train_model(model=model, epochs=600, optimizer='adam')
+model.save("good.h5")
 
 with open('model_history.pkl', 'wb') as file:
     pickle.dump(model_history.history, file)

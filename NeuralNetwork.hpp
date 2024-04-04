@@ -13,6 +13,10 @@
 
 namespace nn
 {
+    enum class activations {
+        sigmoid, relu
+    };
+
     enum class Flags {
         shuffle = 1, fl1, fl2
     };
@@ -157,10 +161,6 @@ namespace nn
 
 
         ~Batch() = default;
-    };
-
-    enum class activations {
-        sigmoid, relu
     };
 
     class NN

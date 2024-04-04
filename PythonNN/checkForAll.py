@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
+import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import pickle
 from tensorflow import keras
@@ -61,8 +62,5 @@ def main()->None:
     plt.show()
 
 
-
-
 if __name__ == "__main__":
     main()
-
