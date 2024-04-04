@@ -3,7 +3,7 @@
 
 # Relative path conversion top directories.
 set(CMAKE_RELATIVE_PATH_TOP_SOURCE "/home/saszombie/Coding/NeuralNetwork")
-set(CMAKE_RELATIVE_PATH_TOP_BINARY "/home/saszombie/Coding/NeuralNetwork/build")
+set(CMAKE_RELATIVE_PATH_TOP_BINARY "/home/saszombie/Coding/NeuralNetwork")
 
 # Force unix paths in dependencies.
 set(CMAKE_FORCE_UNIX_PATHS 1)

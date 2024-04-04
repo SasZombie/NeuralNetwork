@@ -95,6 +95,7 @@ namespace nn
         void apply_relu() noexcept;
         void apply_sigmoid() noexcept;
         void fill(const float x) noexcept;
+        //Appends only on colums!!!
         void append(const Mat& m) noexcept;
         void dot(const Mat a, const Mat b);
         void load(std::ifstream &file) noexcept;
@@ -107,9 +108,12 @@ namespace nn
 
         nn::Mat slice(size_t row, size_t i, size_t cols) noexcept;
 
+        std::tuple<nn::Mat, nn::Mat> split(size_t testSize) const noexcept;
+
 
         void alloc(const size_t n_rows, const size_t n_cols, const size_t n_stride);
 
+        //Concatenates the matricies: 1 2 + 2 3 = 1 2 2 3
         Mat operator+(const Mat& other) const noexcept;
     
     };    

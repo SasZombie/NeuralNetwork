@@ -26,25 +26,12 @@ float getRandom1() noexcept
 
 int main()
 {
-    nn::Mat td(9, 3, dat);
+    nn::Mat td(2, 3, dat);
+    nn::Mat td2(2, 3, dat + 6);
 
-    size_t arch[] = {2, 2, 1};
+    
+    td.append(td2);
 
-    nn::NN nn(arch, 3);
-
-    nn::NN ln;
-    std::ofstream f("test", std::ios::binary | std::ios::app);
-    nn.rand();
-    nn.save(f);
-
-    f.close();
-    nn.print();
-
-    std::ifstream g("test", std::ios::binary);
-
-    ln.load(g);
-
-    std::cout << "---------------------------------------\n";
-
-    ln.print();
+    td.print();
+    
 }

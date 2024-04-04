@@ -1,14 +1,14 @@
 [
 {
   "directory": "/home/saszombie/Coding/NeuralNetwork/build",
-  "command": "/usr/bin/g++    -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -lraylib -lGL -lpthread -ldl -lrt -lX11 -O3 -g -std=gnu++23 -o CMakeFiles/.cpp.dir/NN.cpp.o -c /home/saszombie/Coding/NeuralNetwork/NN.cpp",
-  "file": "/home/saszombie/Coding/NeuralNetwork/NN.cpp",
-  "output": "CMakeFiles/.cpp.dir/NN.cpp.o"
+  "command": "/usr/bin/g++    -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -ansi -g -std=gnu++23 -o CMakeFiles/test.dir/test.cpp.o -c /home/saszombie/Coding/NeuralNetwork/test.cpp",
+  "file": "/home/saszombie/Coding/NeuralNetwork/test.cpp",
+  "output": "CMakeFiles/test.dir/test.cpp.o"
 },
 {
   "directory": "/home/saszombie/Coding/NeuralNetwork/build",
-  "command": "/usr/bin/g++    -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -lraylib -lGL -lpthread -ldl -lrt -lX11 -O3 -g -std=gnu++23 -o CMakeFiles/.cpp.dir/NeuralNetwork.cpp.o -c /home/saszombie/Coding/NeuralNetwork/NeuralNetwork.cpp",
+  "command": "/usr/bin/g++    -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -ansi -g -std=gnu++23 -o CMakeFiles/test.dir/NeuralNetwork.cpp.o -c /home/saszombie/Coding/NeuralNetwork/NeuralNetwork.cpp",
   "file": "/home/saszombie/Coding/NeuralNetwork/NeuralNetwork.cpp",
-  "output": "CMakeFiles/.cpp.dir/NeuralNetwork.cpp.o"
+  "output": "CMakeFiles/test.dir/NeuralNetwork.cpp.o"
 }
 ]
