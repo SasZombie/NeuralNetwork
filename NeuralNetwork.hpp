@@ -3,6 +3,8 @@
 #include <iostream>
 #include <algorithm>
 #include <assert.h>
+#include <cmath>
+
 #include <random>
 #include <memory>
 #include <fstream>
@@ -25,6 +27,7 @@ namespace nn
 
     float sig(const float x) noexcept;
     float relu(const float x) noexcept;
+    bool isEqual(float a, float b, float tolerance);
 
     class Mat
     {
@@ -86,7 +89,7 @@ namespace nn
         size_t getStride() const noexcept;
         const float* getData() const noexcept;
         float getAt(const size_t i, const size_t j) const noexcept;
-        float getAt(const size_t i) noexcept;
+        float getAt(const size_t i) const noexcept;
 
         void clear() noexcept; 
         void sum(const Mat a);
@@ -108,7 +111,8 @@ namespace nn
 
         nn::Mat slice(size_t row, size_t i, size_t cols) noexcept;
 
-        std::tuple<nn::Mat, nn::Mat> split(size_t testSize) const noexcept;
+        //Takes values from 0 to 1. Bigger or smaller values will be truncated
+        std::tuple<nn::Mat, nn::Mat> split(float percent) const noexcept;
 
 
         void alloc(const size_t n_rows, const size_t n_cols, const size_t n_stride);
@@ -200,6 +204,7 @@ namespace nn
 
         float autoLearn(NN &grad, Mat&t, Batch& batch, float rate = 0.001f);
         float cost(const Mat& ti, const Mat& to);
+        float verification(const Mat& ti, const Mat& to) noexcept;
 
         void save(std::ofstream& path) const noexcept;
         void load(std::ifstream& path) noexcept;

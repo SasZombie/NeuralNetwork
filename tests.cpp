@@ -209,14 +209,25 @@ int main(int argc, char **argv)
     SetTargetFPS(60);
     Image prevImage = GenImageColor(28, 28, BLACK);
     Texture2D prevTexture = LoadTextureFromImage(prevImage);
+    size_t rows = bigMat.getRows();
+    size_t count = nn.getCount();
+    size_t inSz = arch[0];
+    size_t outSz = arch[count];
 
-
+    nn::Mat inMat(rows, inSz, bigMat.getStride(), bigMat.getData());  
+    nn::Mat outMat(rows, outSz, bigMat.getStride(),  bigMat.getData()+2);
 
     while (!WindowShouldClose())
     {
         if(IsKeyPressed(KEY_SPACE))
         {
             pause = !pause;
+        }
+
+        if(IsKeyPressed(KEY_T))
+        {
+            
+            std::cout << nn.verification(inMat, outMat) << '\n';
         }
 
         if(IsKeyPressed(KEY_R))

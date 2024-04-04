@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -Wextra -Wformat-nonliteral -Wcast-align -Wpointer-arith -Wmissing-declarations -Winline -Wundef -Wcast-qual -Wshadow -Wwrite-strings -Wno-unused-parameter -Wfloat-equal -pedantic -ansi -g CMakeFiles/tests.dir/tests.cpp.o CMakeFiles/tests.dir/NeuralNetwork.cpp.o -o /home/saszombie/Coding/NeuralNetwork/src/tests  -lraylib -lGL -lm -lpthread -ldl -lrt -lX11

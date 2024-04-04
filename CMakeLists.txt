@@ -10,7 +10,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat-nonliteral -Wcast
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 
 
-SET(TARGETUL "test")
+SET(TARGETUL "tests")
 
 add_executable(${TARGETUL} ${TARGETUL}.cpp NeuralNetwork.cpp)
 target_link_libraries(${TARGETUL} raylib GL m pthread dl rt X11)
+target_compile_options(${TARGETUL} PRIVATE -O3)

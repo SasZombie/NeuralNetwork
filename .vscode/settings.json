@@ -78,6 +78,7 @@
         "variant": "cpp",
         "ranges": "cpp",
         "*.ipp": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "*.inc": "cpp"
     }
 }

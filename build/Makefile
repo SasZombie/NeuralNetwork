@@ -117,24 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named test
+# Target rules for targets named tests
 
 # Build rule for target.
-test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
-.PHONY : test
+tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests
+.PHONY : tests
 
 # fast build rule for target.
-test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
-.PHONY : test/fast
+tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
+.PHONY : tests/fast
 
 NeuralNetwork.o: NeuralNetwork.cpp.o
 .PHONY : NeuralNetwork.o
 
 # target to build an object file
 NeuralNetwork.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/NeuralNetwork.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/NeuralNetwork.cpp.o
 .PHONY : NeuralNetwork.cpp.o
 
 NeuralNetwork.i: NeuralNetwork.cpp.i
@@ -142,7 +142,7 @@ NeuralNetwork.i: NeuralNetwork.cpp.i
 
 # target to preprocess a source file
 NeuralNetwork.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/NeuralNetwork.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/NeuralNetwork.cpp.i
 .PHONY : NeuralNetwork.cpp.i
 
 NeuralNetwork.s: NeuralNetwork.cpp.s
@@ -150,32 +150,32 @@ NeuralNetwork.s: NeuralNetwork.cpp.s
 
 # target to generate assembly for a file
 NeuralNetwork.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/NeuralNetwork.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/NeuralNetwork.cpp.s
 .PHONY : NeuralNetwork.cpp.s
 
-test.o: test.cpp.o
-.PHONY : test.o
+tests.o: tests.cpp.o
+.PHONY : tests.o
 
 # target to build an object file
-test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.o
-.PHONY : test.cpp.o
+tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests.cpp.o
+.PHONY : tests.cpp.o
 
-test.i: test.cpp.i
-.PHONY : test.i
+tests.i: tests.cpp.i
+.PHONY : tests.i
 
 # target to preprocess a source file
-test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.i
-.PHONY : test.cpp.i
+tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests.cpp.i
+.PHONY : tests.cpp.i
 
-test.s: test.cpp.s
-.PHONY : test.s
+tests.s: tests.cpp.s
+.PHONY : tests.s
 
 # target to generate assembly for a file
-test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.s
-.PHONY : test.cpp.s
+tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests.cpp.s
+.PHONY : tests.cpp.s
 
 # Help Target
 help:
@@ -185,13 +185,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... test"
+	@echo "... tests"
 	@echo "... NeuralNetwork.o"
 	@echo "... NeuralNetwork.i"
 	@echo "... NeuralNetwork.s"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
+	@echo "... tests.o"
+	@echo "... tests.i"
+	@echo "... tests.s"
 .PHONY : help
 
 

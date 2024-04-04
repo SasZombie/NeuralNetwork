@@ -324,7 +324,24 @@ nn::Mat nn::Mat::slice(size_t row, size_t startPos, size_t n_cols) noexcept
     return mat;
 }
 
-float nn::Mat::getAt(const size_t i) noexcept
+std::tuple<nn::Mat, nn::Mat> nn::Mat::split(float percent) const noexcept
+{
+    if(percent > 1)
+        percent = 1;
+    if(percent < 0)
+        percent = 0;
+    
+
+    size_t percentReturn = static_cast<float>(percent) * this->rows;
+    std::cout << percentReturn;
+
+    Mat test(percentReturn, this->cols, this->es.data());
+    Mat train(this->rows - percentReturn, this->cols, this->es.data() + percentReturn * this->cols);
+
+    return std::make_tuple(train, test);
+}
+
+float nn::Mat::getAt(const size_t i) const noexcept
 {
     return es[i];
 }
@@ -868,6 +885,44 @@ void nn::NN::load(std::ifstream &path) noexcept
     }   
 }
 
+bool nn::isEqual(float a, float b, float epsilon)
+{
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wfloat-equal"
+    
+
+    if(a == 0.f && b == 0.f)
+        return true;
+
+    #pragma GCC diagnostic pop
+    if (fabs(a - b) < epsilon)
+    {
+        return true; 
+    } 
+
+    return fabs(a) < epsilon && fabs(b) < epsilon;
+
+}
+
+float nn::NN::verification(const Mat &ti, const Mat& to) noexcept
+{
+    float percent = 0.f;
+
+    for(size_t i = 0; i < ti.getRows(); ++i)
+    {
+        for(size_t j = 0; j < ti.getCols(); ++j)
+        {
+            this->setAtAs(0, 0, j, ti.getAt(i, j));
+        }
+        this->forward();
+        std::cout << to.getAt(i) << ' ' << this->getOutput().getAt(i) << '\n';
+        if(isEqual(to.getAt(i), this->getOutput().getAt(i), 0.0f))
+            percent = percent + 1;
+    }
+
+    return percent/to.getRows();
+}
+
 float nn::NN::getAtWs(const size_t i, const size_t j, const size_t k) const noexcept
 {
     return this->ws[i].getAt(j, k);
@@ -907,6 +962,7 @@ void nn::NN::setAtAs(const size_t i, const size_t j, const size_t k, const float
 {
     this->as[i].setAt(j, k, number);
 }
+
 
 nn::NN::~NN() = default;
 

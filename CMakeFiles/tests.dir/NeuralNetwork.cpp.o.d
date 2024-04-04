@@ -1,4 +1,4 @@
-CMakeFiles/test.dir/NeuralNetwork.cpp.o: \
+CMakeFiles/tests.dir/NeuralNetwork.cpp.o: \
  /home/saszombie/Coding/NeuralNetwork/NeuralNetwork.cpp \
  /usr/include/stdc-predef.h \
  /home/saszombie/Coding/NeuralNetwork/NeuralNetwork.hpp \
