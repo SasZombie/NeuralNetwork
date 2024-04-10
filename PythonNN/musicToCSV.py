@@ -1,7 +1,7 @@
 import librosa
 from glob import glob
 import pandas as pd
-
+from scipy import signal
 
 
 num_mfcc=20
@@ -9,7 +9,7 @@ sample_rate=22050
 n_fft=2048
 hop_length=512
 
-my_csv={"filename":[], "chroma_stft_mean": [], "chroma_stft_var": [], "rms_mean": [], "rms_var": [], "spectral_centroid_mean": [],
+my_csv={"filename": [], "length": [], "chroma_stft_mean": [], "chroma_stft_var": [], "rms_mean": [], "rms_var": [], "spectral_centroid_mean": [],
         "spectral_centroid_var": [], "spectral_bandwidth_mean": [], "spectral_bandwidth_var": [], "rolloff_mean": [], "rolloff_var": [],
         "zero_crossing_rate_mean": [], "zero_crossing_rate_var": [], "harmony_mean": [], "harmony_var": [], "perceptr_mean": [],
         "perceptr_var": [], "tempo": [], "mfcc1_mean": [], "mfcc1_var" : [], "mfcc2_mean" : [], "mfcc2_var" : [],
@@ -22,6 +22,7 @@ my_csv={"filename":[], "chroma_stft_mean": [], "chroma_stft_var": [], "rms_mean"
         "mfcc18_mean" : [], "mfcc18_var" : [], "mfcc19_mean" : [], "mfcc19_var" : [], "mfcc20_mean" : [], 
         "mfcc20_var":[], "label":[]}
 my_3_csv=my_csv.copy()
+
 
 num_segment=10
 samples_per_segment = int(sample_rate*30/num_segment)
@@ -41,9 +42,11 @@ for f in sorted(audio_files):
         print("Procesassing " + genre + "...")
     fname=f.split('/')[-1]
 
+    print(fname)
     try:
         y, sr = librosa.load(f, sr=sample_rate)
-    except:
+    except Exception as e:
+        print(e)
         continue
     
     for n in range(num_segment):
@@ -97,6 +100,8 @@ for f in sorted(audio_files):
             feat2 = "mfcc" + str(x+1) + "_var"
             my_3_csv[feat1].append(mfcc[:,x].mean())
             my_3_csv[feat2].append(mfcc[:,x].var())
+        
+        my_3_csv["length"].append(66149)
     
     
     
