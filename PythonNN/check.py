@@ -4,13 +4,11 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-import tensorflow as tf
 from tensorflow import keras
-from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
-from keras import saving
 
 def main()->None:
+    
     df = pd.read_csv("Data/features_3_sec.csv")
 
     class_encod=df.iloc[:,-1]
@@ -25,9 +23,7 @@ def main()->None:
 
 
     fit = StandardScaler()
-    X1=fit.fit_transform(np.array(df.iloc[:,:-1],dtype=float))
-
-
+    fit.fit_transform(np.array(df.iloc[:,:-1],dtype=float))
 
     model = keras.models.load_model("good.h5")
 

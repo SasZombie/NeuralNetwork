@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 
 
-def Validation_plot(history):
+def Validation_plot(history)->None:
     print("Validation Accuracy", max(history["val_accuracy"]))
     pd.DataFrame(history).plot(figsize=(12, 6))
     plt.show()
@@ -60,7 +60,6 @@ def main()->None:
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper left')
     plt.show()
-
-
+    
 if __name__ == "__main__":
     main()

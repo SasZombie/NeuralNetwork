@@ -3,10 +3,10 @@ from glob import glob
 import pandas as pd
 from scipy import signal
 
-
-num_mfcc=20
-sample_rate=22050
-n_fft=2048
+#Mfcc = Mel-frequency cepstral coefficients 
+num_mfcc=20 #How many coefficients
+sample_rate=22050 #Sample of files
+n_fft=2048 #Lentgh of FFT
 hop_length=512
 
 my_csv={"filename": [], "length": [], "chroma_stft_mean": [], "chroma_stft_var": [], "rms_mean": [], "rms_var": [], "spectral_centroid_mean": [],
@@ -32,10 +32,10 @@ genre = glob(dataset_path + "/*")
 n_genres=len(genre)
 genre=[genre[x].split('/')[-1] for x in range(n_genres)]
 
-num_segment=10
+# num_segment=10
 
-samples_per_segment = int(sample_rate*30/num_segment)
-genre=""
+# samples_per_segment = int(sample_rate*30/num_segment)
+# genre=""
 for f in sorted(audio_files):
     if genre!=f.split('/')[-2]:
         genre=f.split('/')[-2]
@@ -94,7 +94,7 @@ for f in sorted(audio_files):
         mfcc=mfcc.T
         fseg_name='.'.join(fname.split('.')[:2])+f'.{n}.wav'
         my_3_csv["filename"].append(fseg_name)
-        my_3_csv["label"].append(genre)
+        my_3_csv["label"].append("")
         for x in range(20):
             feat1 = "mfcc" + str(x+1) + "_mean"
             feat2 = "mfcc" + str(x+1) + "_var"

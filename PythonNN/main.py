@@ -34,11 +34,6 @@ def main()->None:
 
 
 
-    def train_model(model,epochs,optimizer):
-        batch_size=256
-        model.compile(optimizer=optimizer,loss='sparse_categorical_crossentropy',metrics='accuracy')
-        return model.fit(X_train,y_train,validation_data=(X_test,y_test),epochs=epochs,batch_size=batch_size)
-
 
     model=tf.keras.models.Sequential([
         tf.keras.layers.Flatten(input_shape=(X.shape[1],)),
@@ -68,7 +63,8 @@ def main()->None:
                 metrics=["accuracy"])
 
     model.summary()
-    model_history=train_model(model=model, epochs=600, optimizer='adam')
+    
+    model_history=model.fit(X_train,y_train,validation_data=(X_test,y_test),epochs=600,batch_size=256)
     model.save("good.h5")
 
     with open('model_history.pkl', 'wb') as file:
